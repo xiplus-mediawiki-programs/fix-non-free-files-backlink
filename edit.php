@@ -111,7 +111,7 @@ foreach ($cfg["category"] as $category) {
 				"basetimestamp" => $basetimestamp,
 			);
 			echo "edit " . $page["title"] . " summary=" . $summary . "\n";
-			if (!$C["test"]) {
+			if (empty($C["test"])) {
 				$res = cURL($C["wikiapi"], $post);
 			} else {
 				$res = false;
