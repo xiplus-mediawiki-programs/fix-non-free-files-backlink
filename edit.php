@@ -11,7 +11,6 @@ $starttime = microtime(true);
 require __DIR__ . "/../function/curl.php";
 require __DIR__ . "/../function/login.php";
 require __DIR__ . "/../function/edittoken.php";
-require __DIR__ . "/../function/log.php";
 
 echo "The time now is " . date("Y-m-d H:i:s") . " (UTC)\n";
 
@@ -58,17 +57,14 @@ foreach ($cfg["category"] as $category) {
 		$pages = current($res["query"]["pages"]);
 		if (!isset($pages["fileusage"])) {
 			echo "no use\n";
-			WriteLog($page["title"] . " no use");
 			continue;
 		}
 		if (count($pages["fileusage"]) > 1) {
-			echo "use more than 1\n";
-			WriteLog($page["title"] . " be used " . count($pages["fileusage"]) . " times");
+			echo "be used " . count($pages["fileusage"]) . " times\n";
 			continue;
 		}
 		$article = $pages["fileusage"][0]["title"];
-		WriteLog("fix " . $page["title"] . " to " . $article);
-		echo $article . "\n";
+		echo "fix " . $page["title"] . " to " . $article . "\n";
 		for ($i = $C["fail_retry"]; $i > 0; $i--) {
 			$starttimestamp = time();
 			$res = cURL($C["wikiapi"] . "?" . http_build_query(array(
@@ -88,7 +84,6 @@ foreach ($cfg["category"] as $category) {
 
 			if (preg_match_all("/\| *Article *= *.+$/mi", $text, $m) !== 1) {
 				echo "not match 1 time\n";
-				WriteLog($page["title"] . " not match 1 time");
 				break;
 			}
 
@@ -135,8 +130,6 @@ foreach ($cfg["category"] as $category) {
 		}
 	}
 }
-
-ClearLog();
 
 $spendtime = (microtime(true) - $starttime);
 echo "spend " . $spendtime . " s.\n";
